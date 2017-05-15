@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.query.In;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,25 +32,32 @@ public class MainActivity extends AppCompatActivity {
     private void doTestStuff() throws SQLException {
         mDatabaseHelper = OpenHelperManager.getHelper(this,DatabaseHelper.class);
         RuntimeExceptionDao<Test,Integer> testDao = mDatabaseHelper.getTestRuntimeDao();
+        RuntimeExceptionDao<TestCollection,Integer> testCollections = mDatabaseHelper.getTestRuntimeCollectionDao();
         Test test = new Test();
         test.setName("test 1");
-        Test test2 = new Test();
-        test2.setName("test 2");
-        Test test3 = new Test();
-        test3.setName("test 3");
+
 
 
         testDao.create(test);
-        testDao.create(test2);
-        testDao.create(test3);
 
+        for (int i=0;i<20;i++) {
+            TestCollection testCollection1 = new TestCollection();
+            testCollection1.setName("collection "+i);
+            testCollection1.setTest(test);
+            testCollections.create(testCollection1);
+        }
 
-        List<Test> tests =testDao.queryForAll();
-        Log.d("demo",tests.toString());
+            Test testResult =testDao.queryForId(test.getId());
 
-        List<Test> testsQuery = testDao.queryForEq("id",1);
-        Log.d("demos",testsQuery.toString());
+        ForeignCollection<TestCollection> collections = testResult.getTestCollections();
 
+        Iterator<TestCollection> iterator = collections.iterator();
+
+        while (iterator.hasNext()) {
+            TestCollection next = iterator.next();
+            Log.d("collection",next.getName());
+
+        }
 
 
     }
@@ -56,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("Closing","Closing connection......");
         OpenHelperManager.releaseHelper();
+
     }
+
+
 }

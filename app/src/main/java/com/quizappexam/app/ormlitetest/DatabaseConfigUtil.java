@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class DatabaseConfigUtil extends OrmLiteConfigUtil{
 
-    private static final Class<?>[] classes = new Class[]{Test.class};
+    private static final Class<?>[] classes = new Class[]{Test.class,TestCollection.class};
 
     public static void main(String[] args) throws IOException, SQLException {
         String currDirectory = "user.dir";

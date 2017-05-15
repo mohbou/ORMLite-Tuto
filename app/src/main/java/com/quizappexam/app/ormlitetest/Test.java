@@ -1,6 +1,8 @@
 package com.quizappexam.app.ormlitetest;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "test")
@@ -12,6 +14,10 @@ public class Test {
 
     @DatabaseField
     String name;
+
+
+    @ForeignCollectionField
+    private ForeignCollection<TestCollection> mTestCollections;
 
     public Test() {
     }
@@ -36,4 +42,10 @@ public class Test {
     public String toString() {
         return getName();
     }
+
+    public ForeignCollection<TestCollection> getTestCollections() {
+        return mTestCollections;
+    }
+
+
 }
